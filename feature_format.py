@@ -17,29 +17,20 @@ def featureFormat(filename):
     # read the above columns from the csv file
     df = pd.read_csv(filename, usecols=features_list)
     labels = df[df.columns[1]]
-    features = df[df.columns[3:]]
+    features = df[df.columns[3:]].values
+    # print(features)
+    # print(df[df.columns[3:]])
     all_types = np.unique(labels)
-    print(all_types)
     #perform one hot encoding on labels
 
     encoder = LabelEncoder()
     encoder.fit(labels)
     labels = encoder.transform(labels)
     labels = one_hot_encode(labels, len(all_types))
-    # list_stats = df.values.tolist()
-    # take out the features 
-    # for count, row in enumerate(list_stats):
-        # Find all types of pokemons in the data
-        # if row[1] not in labels:
-        #     all_types.append(row[1])
-        # features.append
-        # features.append(row[3:])
-        # labels append
-        # labels.append(row[1])
 
     # Convert the array of float arrays into a numpy float matrix.
     features = np.matrix(features).astype(np.float32)
-    # labels = np.transpose(np.matrix(labels).astype(str))
+    # labels = np.matrix(labels).astype(str)
     # all_types = np.transpose(np.matrix(all_types).astype(str))
     # # Convert the array of int labels into a numpy array.
     # labels_np = np.array(labels).astype(dtype=np.uint8)
@@ -47,6 +38,7 @@ def featureFormat(filename):
     # # Convert the int numpy array into a one-hot matrix.
     # labels_onehot = (np.arange(NUM_LABELS) == labels_np[
     #                  :, None]).astype(np.float32)
+    print(labels)
     return features, labels, all_types
 
 
