@@ -1,13 +1,14 @@
 import tensorflow.python.platform
 import csv
+import sys
 import pandas as pd
 import numpy as np
 import tensorflow as tf
-from sklearn.preprocessing import LabelEncoder
-
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+np.set_printoptions(threshold=sys.maxint)
 
 def featureFormat(filename):
-    #List contains features to be selected from the csv file
+    # List contains features to be selected from the csv file
     features_list = ["Name", "Type 1", "Type 2",
                      "Total", "HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"]
     # Arrays to hold the labels and feature vectors.
@@ -17,11 +18,17 @@ def featureFormat(filename):
     # read the above columns from the csv file
     df = pd.read_csv(filename, usecols=features_list)
     labels = df[df.columns[1]]
-    features = df[df.columns[3:]].values
-    # print(features)
-    # print(df[df.columns[3:]])
+    # print(df[df.columns[1]])
+    features = df[df.columns[3:]].values.astype(float)
+    min_max_scaler = MinMaxScaler()
+    x_scaled = min_max_scaler.fit_transform(features)
+    features = pd.DataFrame(x_scaled)
+    # features.plot(kind='bar')
+    # features = (features - features.mean()) / \
+    #     (features.max() - features.min())
     all_types = np.unique(labels)
-    #perform one hot encoding on labels
+    # print(all_types.shape)
+    # perform one hot encoding on labels
 
     encoder = LabelEncoder()
     encoder.fit(labels)
@@ -34,11 +41,8 @@ def featureFormat(filename):
     # all_types = np.transpose(np.matrix(all_types).astype(str))
     # # Convert the array of int labels into a numpy array.
     # labels_np = np.array(labels).astype(dtype=np.uint8)
-
-    # # Convert the int numpy array into a one-hot matrix.
-    # labels_onehot = (np.arange(NUM_LABELS) == labels_np[
-    #                  :, None]).astype(np.float32)
-    print(labels)
+    # print(labels)
+    # tf.Print(labels, [labels])
     return features, labels, all_types
 
 
